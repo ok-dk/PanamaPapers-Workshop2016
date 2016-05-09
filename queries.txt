@@ -1,0 +1,30 @@
+# Get all Danish nodes
+SELECT *
+  FROM `node_countriesNW`
+ WHERE `country_id` = 67;
+
+# Get all primary entities
+SELECT n.*
+  FROM `nodesNW` AS n
+  JOIN `node_countriesNW` AS nc ON nc.`NODEID1` = n.`Unique_ID`
+ WHERE nc.`country_id` = 67
+   AND `subtypes_` IN ('MASTER CLIENT', 'OFFICER');
+
+# Get information on all Danish nodes
+SELECT n.`Unique_ID`, n.`Description_`, CONCAT(e.`description_`, ' of ', n2.`Description_`) AS position, e.`date_from`, e.`date_to`, n.*
+  FROM `nodesNW` AS n
+  JOIN `node_countriesNW` AS nc ON nc.`NODEID1` = n.`Unique_ID`
+  JOIN `edges_1DNW` AS e ON e.`Entity_ID1` = n.`Unique_ID`
+  JOIN `nodesNW` AS n2 ON n2.`Unique_ID` = e.`Entity_ID2`
+ WHERE nc.`country_id` = 67
+   AND NOT e.`Description_` = 'registered address'
+ ORDER BY n.`Description_`, e.`description_`;
+
+# Get adresses of all Danish nodes
+SELECT n.`Unique_ID`, n.`Description_`, n2.`Description_`
+  FROM `nodesNW` AS n
+  JOIN `node_countriesNW` AS nc ON nc.`NODEID1` = n.`Unique_ID`
+  JOIN `edges_1DNW` AS e ON e.`Entity_ID1` = n.`Unique_ID`
+  JOIN `nodesNW` AS n2 ON n2.`Unique_ID` = e.`Entity_ID2`
+ WHERE nc.`country_id` = 67
+   AND e.`Description_` = 'registered address';
